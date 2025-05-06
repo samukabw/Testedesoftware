@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Minha To-Do List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <h1 class="text-center mb-4"> Lista de Tarefas</h1>
+
+    
+    <form method="POST" class="card p-4 mb-4 shadow-sm">
+      {% csrf_token %}
+      <div class="mb-3">
+        <input type="text" name="titulo" class="form-control" placeholder="Nova tarefa" required>
+      </div>
+      <div class="mb-3">
+        <textarea name="descricao" class="form-control" placeholder="Descrição (opcional)" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Adicionar</button>
+    </form>
+
+    <!-- Lista de tarefas -->
+    {% if tarefas %}
+      <ul class="list-group">
+        {% for tarefa in tarefas %}
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">{{ tarefa.titulo }}</div>
+              {% if tarefa.descricao %}
+                <small class="text-muted">{{ tarefa.descricao }}</small><br>
+              {% endif %}
+              <span class="badge {% if tarefa.feita %}bg-success{% else %}bg-warning text-dark{% endif %} mt-2">
+                {% if tarefa.feita %}Concluída{% else %}Pendente{% endif %}
+              </span>
+            </div>
+            <div>
+              <form action="{% url 'marcar_feita' tarefa.id %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  {% if tarefa.feita %}Desfazer{% else %}Concluir{% endif %}
+                </button>
+              </form>
+              <form action="{% url 'excluir_tarefa' tarefa.id %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">
+                  Excluir
+                </button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="alert alert-info text-center">Nenhuma tarefa cadastrada.</div>
+    {% endif %}
+  </div>
+</body>
+</html>
