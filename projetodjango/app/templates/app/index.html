@@ -2,60 +2,590 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Minha To-Do List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarefas nassau - Lista de Tarefas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-  <div class="container mt-5">
-    <h1 class="text-center mb-4"> Lista de Tarefas</h1>
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      
+      
+      --dark-bg-color: #121212;
+      --dark-card-color: #1e1e1e;
+      --dark-text-color: #f0f0f0; 
+      --dark-border-color: #444; 
+      --dark-secondary-text: #b0b0b0; 
+    }
     
-    <form method="POST" class="card p-4 mb-4 shadow-sm">
-      {% csrf_token %}
-      <div class="mb-3">
-        <input type="text" name="titulo" class="form-control" placeholder="Nova tarefa" required>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding-bottom: 50px;
+      transition: all 0.3s ease;
+    }
+    
+ 
+    body.dark-mode {
+      background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .navbar {
+      background-color: var(--dark-card-color) !important;
+      border-bottom: 1px solid var(--dark-border-color);
+    }
+    
+    .dark-mode .navbar-brand,
+    .dark-mode .nav-link {
+      color: var(--dark-text-color) !important;
+    }
+    
+    .dark-mode .task-card,
+    .dark-mode .add-task-form,
+    .dark-mode .empty-state {
+      background-color: var(--dark-card-color);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--dark-border-color); 
+    }
+    
+    .dark-mode .task-body,
+    .dark-mode .form-control,
+    .dark-mode .form-control:focus {
+      background-color: #252525; 
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .task-title,
+    .dark-mode .empty-state h4 {
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .task-description,
+    .dark-mode .empty-state p {
+      color: var(--dark-secondary-text); 
+    }
+    
+    .dark-mode .form-control {
+      border-color: var(--dark-border-color);
+      background-color: #252525;
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .form-control::placeholder {
+      color: #777; 
+    }
+    
+    .dark-mode .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      border-color: var(--primary-color);
+    }
+    
+    .dark-mode .status-pending {
+      background-color: rgba(255, 193, 7, 0.15); 
+      color: #ffc107; 
+    }
+    
+    .dark-mode .status-completed {
+      background-color: rgba(75, 181, 67, 0.15); 
+      color: #4bb543; /
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .task-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .task-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 20px;
+    }
+    
+    .task-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .task-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 15px 20px;
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .task-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2));
+    }
+    
+    .task-body {
+      padding: 20px;
+      background-color: white;
+      transition: background-color 0.3s ease;
+    }
+    
+    .task-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark-color);
+    }
+    
+    .task-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      transition: color 0.3s ease;
+    }
+    
+    .task-status {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .status-pending {
+      background-color: rgba(255, 193, 7, 0.2);
+      color: #856404;
+    }
+    
+    .status-completed {
+      background-color: rgba(75, 181, 67, 0.2);
+      color: #155724;
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn-action {
+      border-radius: 50px;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-action:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn-complete {
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+    }
+    
+    .btn-complete:hover {
+      background-color: #3a9a35;
+      color: white;
+      box-shadow: 0 5px 15px rgba(75, 181, 67, 0.3);
+    }
+    
+    .btn-undo {
+      background-color: var(--warning-color);
+      color: var(--dark-color);
+      border: none;
+    }
+    
+    .btn-undo:hover {
+      background-color: #e0a800;
+      color: var(--dark-color);
+      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-delete {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+    }
+    
+    .btn-delete:hover {
+      background-color: #c82333;
+      color: white;
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .add-task-form {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .form-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      margin: 10px auto 0;
+      border-radius: 3px;
+    }
+    
+    .form-control, .form-control:focus {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+    
+    .btn-submit:hover::after {
+      left: 100%;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .empty-state h4 {
+      color: var(--dark-color);
+      font-weight: 600;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    .empty-state p {
+      color: #6c757d;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    
+    .dark-mode-toggle {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      margin-left: 15px;
+    }
+    
+    .dark-mode-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider-icons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 8px;
+      pointer-events: none;
+    }
+    
+    .slider-icons i {
+      font-size: 12px;
+      color: white;
+    }
+    
+   
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .fab:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.5);
+    }
+    
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .task-card {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-5">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-tasks me-2"></i>Tarefas 
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Início</a>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <label class="dark-mode-toggle">
+              <input type="checkbox" id="darkModeToggle">
+              <span class="slider"></span>
+              <div class="slider-icons">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+              </div>
+            </label>
+          </li>
+        </ul>
       </div>
-      <div class="mb-3">
-        <textarea name="descricao" class="form-control" placeholder="Descrição (opcional)" rows="3"></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Adicionar</button>
-    </form>
+    </div>
+  </nav>
+
+  <div class="container task-container">
+    <div class="add-task-form">
+      <h4 class="form-title"><i class="fas fa-plus-circle me-2"></i>Adicionar Nova Tarefa</h4>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <input type="text" name="titulo" class="form-control" placeholder="Título da tarefa" required>
+        </div>
+        <div class="mb-3">
+          <textarea name="descricao" class="form-control" placeholder="Descrição (opcional)" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-submit w-100">
+          <i class="fas fa-plus me-2"></i>Adicionar Tarefa
+        </button>
+      </form>
+    </div>
 
     <!-- Lista de tarefas -->
     {% if tarefas %}
-      <ul class="list-group">
-        {% for tarefa in tarefas %}
-          <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-              <div class="fw-bold">{{ tarefa.titulo }}</div>
-              {% if tarefa.descricao %}
-                <small class="text-muted">{{ tarefa.descricao }}</small><br>
-              {% endif %}
-              <span class="badge {% if tarefa.feita %}bg-success{% else %}bg-warning text-dark{% endif %} mt-2">
-                {% if tarefa.feita %}Concluída{% else %}Pendente{% endif %}
-              </span>
-            </div>
+      {% for tarefa in tarefas %}
+        <div class="task-card" style="animation-delay: {{ forloop.counter0|divisibleby:2|yesno:'0.1s,0.2s' }}">
+          <div class="task-header d-flex justify-content-between align-items-center">
             <div>
+              <i class="fas fa-tasks me-2"></i>
+              <span>Tarefa #{{ forloop.counter }}</span>
+            </div>
+            <small>{{ tarefa.data_criacao|date:"d/m/Y" }}</small>
+          </div>
+          <div class="task-body">
+            <h5 class="task-title">{{ tarefa.titulo }}</h5>
+            {% if tarefa.descricao %}
+              <p class="task-description">{{ tarefa.descricao }}</p>
+            {% endif %}
+            <span class="task-status {% if tarefa.feita %}status-completed{% else %}status-pending{% endif %}">
+              <i class="fas {% if tarefa.feita %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+              {% if tarefa.feita %}Concluída{% else %}Pendente{% endif %}
+            </span>
+            <div class="task-actions">
               <form action="{% url 'marcar_feita' tarefa.id %}" method="POST" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-outline-success">
+                <button type="submit" class="btn btn-action {% if tarefa.feita %}btn-undo{% else %}btn-complete{% endif %}">
+                  <i class="fas {% if tarefa.feita %}fa-undo{% else %}fa-check{% endif %} me-1"></i>
                   {% if tarefa.feita %}Desfazer{% else %}Concluir{% endif %}
                 </button>
               </form>
               <form action="{% url 'excluir_tarefa' tarefa.id %}" method="POST" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-outline-danger"
+                <button type="submit" class="btn btn-action btn-delete"
                         onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">
-                  Excluir
+                  <i class="fas fa-trash-alt me-1"></i> Excluir
                 </button>
               </form>
             </div>
-          </li>
-        {% endfor %}
-      </ul>
+          </div>
+        </div>
+      {% endfor %}
     {% else %}
-      <div class="alert alert-info text-center">Nenhuma tarefa cadastrada.</div>
+      <div class="empty-state">
+        <i class="fas fa-clipboard-list"></i>
+        <h4>Nenhuma tarefa encontrada</h4>
+        <p>Adicione sua primeira tarefa usando o formulário acima</p>
+      </div>
     {% endif %}
   </div>
+
+  <!-- Floating action button -->
+  <div class="fab" onclick="document.querySelector('.add-task-form').scrollIntoView({ behavior: 'smooth' });">
+    <i class="fas fa-plus"></i>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+  
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    
+    
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      body.classList.add('dark-mode');
+      darkModeToggle.checked = true;
+    }
+    
+
+    darkModeToggle.addEventListener('change', function() {
+      if (this.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    });
+    
+ 
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+    
+    const animateCards = () => {
+      const cards = document.querySelectorAll('.task-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+    };
+    
+    
+    document.addEventListener('DOMContentLoaded', animateCards);
+  </script>
 </body>
 </html>
