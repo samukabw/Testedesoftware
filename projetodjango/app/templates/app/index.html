@@ -65,24 +65,23 @@
       {% for tarefa in tarefas %}
         <div class="task-card" style="animation-delay: {{ forloop.counter0|divisibleby:2|yesno:'0.1s,0.2s' }}">
           <div class="task-header d-flex justify-content-between align-items-center">
-            <div>
-              <i class="fas fa-tasks me-2"></i>
-              <span>Tarefa #{{ forloop.counter }}</span>
-            </div>
-            <small>{{ tarefa.data_criacao|date:"d/m/Y" }}</small>
-          </div>
-          <div class="task-body">
-            <h5 class="task-title">{{ tarefa.titulo }}</h5>
-            {% if tarefa.descricao %}
-              <p class="task-description">{{ tarefa.descricao }}</p>
-             
-            {% endif %}
-            {% if tarefa.data_hora %}
-              <p class="text-muted">
-              <i class="far fa-clock me-1"></i>
-             {{ tarefa.data_hora|date:"d/m/Y H:i" }}
-             </p>
-           {% endif %}
+  <div>
+    <i class="fas fa-tasks me-2"></i>
+    <span>Tarefa #{{ forloop.counter }}</span>
+  </div>
+  <small class="task-date">{{ tarefa.data_criacao|date:"d/m/Y" }}</small>
+</div>
+<div class="task-body">
+  <h5 class="task-title">{{ tarefa.titulo }}</h5>
+  {% if tarefa.descricao %}
+    <p class="task-description">{{ tarefa.descricao }}</p>
+  {% endif %}
+  {% if tarefa.data_hora %}
+    <p class="task-datetime">
+      <i class="far fa-clock me-1"></i>
+      {{ tarefa.data_hora|date:"d/m/Y H:i" }}
+    </p>
+  {% endif %}
             
             <span class="task-status {% if tarefa.feita %}status-completed{% else %}status-pending{% endif %}">
               <i class="fas {% if tarefa.feita %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
