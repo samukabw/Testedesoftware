@@ -433,3 +433,33 @@
     .task-card {
       animation: fadeIn 0.5s ease forwards;
     }
+
+    /* Estilos para datas no modo claro */
+.task-date {
+  color: #6c757d;
+}
+
+.task-datetime {
+  color: #6c757d;
+}
+
+.task-datetime i {
+  color: #6c757d;
+}
+
+/* Estilos para datas no modo escuro */
+.dark-mode .task-date,
+.dark-mode .task-datetime {
+  color: var(--dark-secondary-text);
+}
+
+.dark-mode .task-datetime i {
+  color: var(--dark-secondary-text);
+}
+
+/* Transições suaves para modo escuro */
+.task-date,
+.task-datetime,
+.task-datetime i {
+  transition: color 0.3s ease;
+}
