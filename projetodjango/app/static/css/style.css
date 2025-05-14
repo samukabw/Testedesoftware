@@ -1,0 +1,435 @@
+:root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      
+      
+      --dark-bg-color: #121212;
+      --dark-card-color: #1e1e1e;
+      --dark-text-color: #f0f0f0; 
+      --dark-border-color: #444; 
+      --dark-secondary-text: #b0b0b0; 
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding-bottom: 50px;
+      transition: all 0.3s ease;
+    }
+    
+ 
+    body.dark-mode {
+      background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .navbar {
+      background-color: var(--dark-card-color) !important;
+      border-bottom: 1px solid var(--dark-border-color);
+    }
+    
+    .dark-mode .navbar-brand,
+    .dark-mode .nav-link {
+      color: var(--dark-text-color) !important;
+    }
+    
+    .dark-mode .task-card,
+    .dark-mode .add-task-form,
+    .dark-mode .empty-state {
+      background-color: var(--dark-card-color);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--dark-border-color); 
+    }
+    
+    .dark-mode .task-body,
+    .dark-mode .form-control,
+    .dark-mode .form-control:focus {
+      background-color: #252525; 
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .task-title,
+    .dark-mode .empty-state h4 {
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .task-description,
+    .dark-mode .empty-state p {
+      color: var(--dark-secondary-text); 
+    }
+    
+    .dark-mode .form-control {
+      border-color: var(--dark-border-color);
+      background-color: #252525;
+      color: var(--dark-text-color);
+    }
+    
+    .dark-mode .form-control::placeholder {
+      color: #777; 
+    }
+    
+    .dark-mode .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      border-color: var(--primary-color);
+    }
+    
+    .dark-mode .status-pending {
+      background-color: rgba(255, 193, 7, 0.15); 
+      color: #ffc107; 
+    }
+    
+    .dark-mode .status-completed {
+      background-color: rgba(75, 181, 67, 0.15); 
+      color: #4bb543; /
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .task-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .task-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 20px;
+    }
+    
+    .task-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .task-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 15px 20px;
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .task-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2));
+    }
+    
+    .task-body {
+      padding: 20px;
+      background-color: white;
+      transition: background-color 0.3s ease;
+    }
+    
+    .task-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark-color);
+    }
+    
+    .task-description {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      transition: color 0.3s ease;
+    }
+    
+    .task-status {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .status-pending {
+      background-color: rgba(255, 193, 7, 0.2);
+      color: #856404;
+    }
+    
+    .status-completed {
+      background-color: rgba(75, 181, 67, 0.2);
+      color: #155724;
+    }
+    
+    .task-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn-action {
+      border-radius: 50px;
+      padding: 8px 15px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-action:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn-complete {
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+    }
+    
+    .btn-complete:hover {
+      background-color: #3a9a35;
+      color: white;
+      box-shadow: 0 5px 15px rgba(75, 181, 67, 0.3);
+    }
+    
+    .btn-undo {
+      background-color: var(--warning-color);
+      color: var(--dark-color);
+      border: none;
+    }
+    
+    .btn-undo:hover {
+      background-color: #e0a800;
+      color: var(--dark-color);
+      box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .btn-delete {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+    }
+    
+    .btn-delete:hover {
+      background-color: #c82333;
+      color: white;
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .add-task-form {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .form-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      margin: 10px auto 0;
+      border-radius: 3px;
+    }
+    
+    .form-control, .form-control:focus {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 12px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+    
+    .btn-submit:hover::after {
+      left: 100%;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .empty-state h4 {
+      color: var(--dark-color);
+      font-weight: 600;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+    
+    .empty-state p {
+      color: #6c757d;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    
+    .dark-mode-toggle {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      margin-left: 15px;
+    }
+    
+    .dark-mode-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider-icons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 8px;
+      pointer-events: none;
+    }
+    
+    .slider-icons i {
+      font-size: 12px;
+      color: white;
+    }
+    
+   
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .fab:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.5);
+    }
+    
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .task-card {
+      animation: fadeIn 0.5s ease forwards;
+    }
