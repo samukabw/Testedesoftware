@@ -72,7 +72,7 @@
   <small class="task-date">{{ tarefa.data_criacao|date:"d/m/Y" }}</small>
 </div>
 <div class="task-body">
-  <h5 class="task-title">{{ tarefa.titulo }}</h5>
+  <h5 class="task-title"><p>{{ tarefa.id }} - {{ tarefa.titulo }}</h5>
   {% if tarefa.descricao %}
     <p class="task-description">{{ tarefa.descricao }}</p>
   {% endif %}

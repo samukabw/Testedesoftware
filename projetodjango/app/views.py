@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Tarefa
 from django.utils.dateparse import parse_datetime
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def index(request):
     if request.method == "POST":
         titulo = request.POST.get("titulo", "").strip()
@@ -15,12 +17,14 @@ def index(request):
     tarefas = Tarefa.objects.all().order_by("feita")
     return render(request, "app/index.html", {"tarefas": tarefas})
 
+@csrf_exempt
 def marcar_feita(request, tarefa_id):
     tarefa = get_object_or_404(Tarefa, pk=tarefa_id)
     tarefa.feita = not tarefa.feita
     tarefa.save()
     return redirect("index")
 
+@csrf_exempt
 def excluir_tarefa(request, tarefa_id):
     tarefa = get_object_or_404(Tarefa, pk=tarefa_id)
     tarefa.delete()
